@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PokéPizza — Order Confirmed!</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-header">
+    <a href="index.html">🍕 PokéPizza</a>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pizza.html">Order Pizza</a></li>
+            <li><a href="trivia.html">Trivia</a></li>
+            <li><a href="calculator.html">Arena Area Calc</a></li>
+            <li><a href="pokemon.html">Pokémon</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="container">
+    <div class="card confirm-box">
+        <div class="check-circle">✓</div>
+        <h1>Order Confirmed!</h1>
+        <p>🍕 Your pizza is being lovingly crafted by our Pokémon chefs!</p>
+        <p class="countdown" id="timer">Estimated ready in: <span id="countdown">20:00</span></p>
+        <p>Thank you for choosing PokéPizza — we hope you enjoy every bite!</p>
+        <div class="actions">
+            <a href="pizza.html" class="btn btn-primary">Order Again</a>
+            <a href="index.html" class="btn btn-outline">Back to Home</a>
+            <a href="pokemon.html" class="btn btn-yellow">See Pokémon</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    var seconds = 20 * 60;
+    var el = document.getElementById('countdown');
+    var interval = setInterval(function() {
+        seconds--;
+        if (seconds <= 0) {
+            clearInterval(interval);
+            el.textContent = 'READY! 🎉';
+            document.getElementById('timer').style.color = '#28a745';
+            return;
+        }
+        var m = Math.floor(seconds / 60);
+        var s = seconds % 60;
+        el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    }, 1000);
+</script>
+</body>
+</html>

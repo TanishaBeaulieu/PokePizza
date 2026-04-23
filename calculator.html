@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PokéPizza — Battle Arena Area Calculator</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-header">
+    <a href="index.html">🍕 PokéPizza</a>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pizza.html">Order Pizza</a></li>
+            <li><a href="trivia.html">Trivia</a></li>
+            <li><a href="calculator.html" class="active">Arena Area Calc</a></li>
+            <li><a href="pokemon.html">Pokémon</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-header">
+    <h1>📐 Area Calculator</h1>
+    <p>Select a shape for your battle arena, enter your values, and instantly get the area!</p>
+</div>
+
+<div class="container">
+    <div class="card">
+
+        <div class="shape-tabs">
+            <button class="shape-tab active" onclick="switchShape('rect', this)">⬛ Rectangle</button>
+            <button class="shape-tab" onclick="switchShape('tri', this)">🔺 Triangle</button>
+            <button class="shape-tab" onclick="switchShape('circ', this)">⭕ Circle</button>
+        </div>
+
+        <div class="shape-panel active" id="panel-rect">
+            <div class="formula-note">Formula: <strong>Area = length × width</strong></div>
+            <div class="form-group">
+                <label for="rect-len">Length:</label>
+                <input type="text" id="rect-len" placeholder="e.g. 10" min="0">
+            </div>
+            <div class="form-group">
+                <label for="rect-wid">Width:</label>
+                <input type="text" id="rect-wid" placeholder="e.g. 5" min="0">
+            </div>
+            <button class="btn btn-primary" onclick="calcRect()">Calculate Battle Arena Area</button>
+        </div>
+
+        <div class="shape-panel" id="panel-tri">
+            <div class="formula-note">Formula: <strong>Area = ½ × base × height</strong></div>
+            <div class="form-group">
+                <label for="tri-base">Base:</label>
+                <input type="text" id="tri-base" placeholder="e.g. 8" min="0">
+            </div>
+            <div class="form-group">
+                <label for="tri-h">Height:</label>
+                <input type="text" id="tri-h" placeholder="e.g. 6" min="0">
+            </div>
+            <button class="btn btn-primary" onclick="calcTri()">Calculate Battle Arena Area</button>
+        </div>
+
+        <div class="shape-panel" id="panel-circ">
+            <div class="formula-note">Formula: <strong>Area = π × radius²</strong></div>
+            <div class="form-group">
+                <label for="circ-r">Radius:</label>
+                <input type="text" id="circ-r" placeholder="e.g. 7" min="0">
+            </div>
+            <button class="btn btn-primary" onclick="calcCirc()">Calculate Battle Arena Area</button>
+        </div>
+
+        <div id="calc-result"></div>
+
+    </div>
+
+    <div class="card">
+        <p class="history-title">Calculation History</p>
+        <div id="history">
+            <p class="no-history">No calculations yet.</p>
+        </div>
+        <button class="btn btn-outline clear-btn" onclick="clearHistory()">Clear History</button>
+    </div>
+
+</div>
+
+<script>
+    var calcHistory = [];
+
+    function switchShape(shape, btn) {
+        var panels = document.querySelectorAll('.shape-panel');
+        for (var i = 0; i < panels.length; i++) {
+            panels[i].classList.remove('active');
+        }
+        var tabs = document.querySelectorAll('.shape-tab');
+        for (var j = 0; j < tabs.length; j++) {
+            tabs[j].classList.remove('active');
+        }
+        document.getElementById('panel-' + shape).classList.add('active');
+        btn.classList.add('active');
+        document.getElementById('calc-result').style.display = 'none';
+    }
+
+    function showResult(label, value) {
+        var rounded = Math.round(value * 10000) / 10000;
+        var el = document.getElementById('calc-result');
+        el.innerHTML = '<strong>' + label + ':</strong> ' + rounded + ' sq units';
+        el.style.display = 'block';
+        addHistory(label + ' = ' + rounded + ' sq units');
+    }
+
+    function validate(val, name) {
+        if (isNaN(val) || val <= 0) {
+            alert(name + ' must be a number greater than 0.');
+            return false;
+        }
+        return true;
+    }
+
+    function calcRect() {
+        var l = parseFloat(document.getElementById('rect-len').value);
+        var w = parseFloat(document.getElementById('rect-wid').value);
+        if (!validate(l, 'Length') || !validate(w, 'Width')) return;
+        showResult('Rectangle Area', l * w);
+    }
+
+    function calcTri() {
+        var b = parseFloat(document.getElementById('tri-base').value);
+        var h = parseFloat(document.getElementById('tri-h').value);
+        if (!validate(b, 'Base') || !validate(h, 'Height')) return;
+        showResult('Triangle Area', 0.5 * b * h);
+    }
+
+    function calcCirc() {
+        var r = parseFloat(document.getElementById('circ-r').value);
+        if (!validate(r, 'Radius')) return;
+        showResult('Circle Area', Math.PI * r * r);
+    }
+
+    function addHistory(entry) {
+        calcHistory.unshift(entry);
+        if (calcHistory.length > 10) calcHistory.pop();
+        renderHistory();
+    }
+
+    function renderHistory() {
+        var el = document.getElementById('history');
+        if (calcHistory.length === 0) {
+            el.innerHTML = '<p class="no-history">No calculations yet.</p>';
+            return;
+        }
+        var html = '';
+        for (var i = 0; i < calcHistory.length; i++) {
+            html += '<div class="history-item">#' + (calcHistory.length - i) + '. ' + calcHistory[i] + '</div>';
+        }
+        el.innerHTML = html;
+    }
+
+    function clearHistory() {
+        calcHistory = [];
+        renderHistory();
+    }
+</script>
+</body>
+</html>

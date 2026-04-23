@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PokéPizza — Order</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-header">
+    <a href="index.html">🍕 PokéPizza</a>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pizza.html" class="active">Order Pizza</a></li>
+            <li><a href="trivia.html">Trivia</a></li>
+            <li><a href="calculator.html">Arena Area Calc</a></li>
+            <li><a href="pokemon.html">Pokémon</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-header">
+    <h1>🍕 Order Your Pizza</h1>
+    <p>Customize your perfect pizza and see the price update live!</p>
+</div>
+
+<div class="container">
+    <div class="order-layout">
+        <div>
+            <div class="card">
+                <p class="section-title">Your Name</p>
+                <div class="form-group">
+                    <label for="custname">Name:</label>
+                    <input type="text" id="custname" value="First Last" oninput="updateSummary()">
+                </div>
+
+                <p class="section-title">Choose Your Size</p>
+                <div class="radio-group form-group">
+                    <label><input type="radio" name="size" value="Small" data-price="8" onchange="updateSummary()"> Small — $8.00</label>
+                    <label><input type="radio" name="size" value="Medium" data-price="10" onchange="updateSummary()"> Medium — $10.00</label>
+                    <label><input type="radio" name="size" value="Large" data-price="12" onchange="updateSummary()"> Large — $12.00</label>
+                    <label><input type="radio" name="size" value="X-Large" data-price="14" onchange="updateSummary()"> X-Large — $14.00</label>
+                </div>
+
+                <p class="section-title">Choose Toppings <span class="topping-note">($1.50 each)</span></p>
+                <div class="check-group form-group">
+                    <label><input type="checkbox" value="Sliced Tomatoes" onchange="updateSummary()"> Sliced Tomatoes</label>
+                    <label><input type="checkbox" value="Onions &amp; Peppers" onchange="updateSummary()"> Onions &amp; Peppers</label>
+                    <label><input type="checkbox" value="Fresh Mozzarella" onchange="updateSummary()"> Fresh Mozzarella</label>
+                    <label><input type="checkbox" value="Mushrooms" onchange="updateSummary()"> Mushrooms</label>
+                    <label><input type="checkbox" value="Buffalo Chicken" onchange="updateSummary()"> Buffalo Chicken</label>
+                </div>
+
+                <p class="section-title">Pick-Up or Delivery</p>
+                <div class="form-group">
+                    <select id="delivery" onchange="updateSummary()">
+                        <option value="pickup">Pick-Up (Free)</option>
+                        <option value="delivery">Delivery (+$2.00)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary btn-full" onclick="submitOrder()">Confirm Order ✓</button>
+                <div class="cancelled-msg" id="cancelled-msg">
+                    Order cancelled. Feel free to make changes and try again.
+                </div>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <div class="card">
+                <p class="section-title">Live Order Summary</p>
+                <h2 id="summary-name">Your Order</h2>
+                <table>
+                    <thead>
+                        <tr><th>Item</th><th>Detail</th><th>Price</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Size</strong></td>
+                            <td id="sum-size">—</td>
+                            <td id="sum-size-price">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Toppings</strong></td>
+                            <td id="sum-toppings">None</td>
+                            <td id="sum-top-price">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delivery</strong></td>
+                            <td id="sum-delivery">Pick-Up</td>
+                            <td id="sum-del-price">$0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="total-row">
+                    <span>Total:</span>
+                    <span id="sum-total">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function updateSummary() {
+        var name = document.getElementById('custname').value || 'Your';
+        document.getElementById('summary-name').textContent = name + "'s Order";
+
+        var sizeRadio = document.querySelector('input[name="size"]:checked');
+        var sizeLabel = '—';
+        var sizePrice = 0;
+        if (sizeRadio) {
+            sizeLabel = sizeRadio.value;
+            sizePrice = parseFloat(sizeRadio.dataset.price);
+        }
+        document.getElementById('sum-size').textContent = sizeLabel;
+        document.getElementById('sum-size-price').textContent = '$' + sizePrice.toFixed(2);
+
+        var boxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        var toppingNames = [];
+        for (var i = 0; i < boxes.length; i++) {
+            toppingNames.push(boxes[i].value);
+        }
+        var toppingPrice = toppingNames.length * 1.50;
+        document.getElementById('sum-toppings').innerHTML = toppingNames.length ? toppingNames.join('<br>') : 'None';
+        document.getElementById('sum-top-price').textContent = '$' + toppingPrice.toFixed(2);
+
+        var delivery = document.getElementById('delivery').value;
+        var delLabel = delivery === 'delivery' ? 'Delivery' : 'Pick-Up';
+        var delPrice = delivery === 'delivery' ? 2.00 : 0.00;
+        document.getElementById('sum-delivery').textContent = delLabel;
+        document.getElementById('sum-del-price').textContent = '$' + delPrice.toFixed(2);
+
+        var total = sizePrice + toppingPrice + delPrice;
+        document.getElementById('sum-total').textContent = '$' + total.toFixed(2);
+    }
+
+    function submitOrder() {
+        var sizeRadio = document.querySelector('input[name="size"]:checked');
+        if (!sizeRadio) {
+            alert('Please select a pizza size before confirming!');
+            return;
+        }
+        var total = document.getElementById('sum-total').textContent;
+        if (confirm('Would you like to submit your order for ' + total + '?')) {
+            window.location.href = 'pizza-confirm.html';
+        } else {
+            document.getElementById('cancelled-msg').style.display = 'block';
+        }
+    }
+
+    updateSummary();
+</script>
+</body>
+</html>

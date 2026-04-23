@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PokéPizza — Pokémon Trivia</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-header">
+    <a href="index.html">🍕 PokéPizza</a>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pizza.html">Order Pizza</a></li>
+            <li><a href="trivia.html" class="active">Trivia</a></li>
+            <li><a href="calculator.html">Arena Area Calc</a></li>
+            <li><a href="pokemon.html">Pokémon</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-header">
+    <h1>🧠 Pokémon Trivia</h1>
+    <p>Test your Pokémon knowledge! Answer all 5 questions then click Submit.</p>
+</div>
+
+<div class="container">
+    <div class="card">
+
+        <div class="quiz-question">
+            <div class="q-num">Question 1 of 5</div>
+            <p>What type is Piplup?</p>
+            <div class="quiz-options">
+                <label><input type="radio" name="q1" value="a"> Fire</label>
+                <label><input type="radio" name="q1" value="b"> Grass</label>
+                <label><input type="radio" name="q1" value="c"> Water</label>
+                <label><input type="radio" name="q1" value="d"> Electric</label>
+            </div>
+        </div>
+
+        <div class="quiz-question">
+            <div class="q-num">Question 2 of 5</div>
+            <p>What is the final evolution of Charmander?</p>
+            <div class="quiz-options">
+                <label><input type="radio" name="q2" value="a"> Charmeleon</label>
+                <label><input type="radio" name="q2" value="b"> Charizard</label>
+                <label><input type="radio" name="q2" value="c"> Blaziken</label>
+                <label><input type="radio" name="q2" value="d"> Arcanine</label>
+            </div>
+        </div>
+
+        <div class="quiz-question">
+            <div class="q-num">Question 3 of 5</div>
+            <p>Which Pokémon evolves into Raichu?</p>
+            <div class="quiz-options">
+                <label><input type="radio" name="q3" value="a"> Pichu</label>
+                <label><input type="radio" name="q3" value="b"> Jolteon</label>
+                <label><input type="radio" name="q3" value="c"> Pikachu</label>
+                <label><input type="radio" name="q3" value="d"> Marill</label>
+            </div>
+        </div>
+
+        <div class="quiz-question">
+            <div class="q-num">Question 4 of 5</div>
+            <p>Squirtle's second evolution is called…?</p>
+            <div class="quiz-options">
+                <label><input type="radio" name="q4" value="a"> Wartortle</label>
+                <label><input type="radio" name="q4" value="b"> Blastoise</label>
+                <label><input type="radio" name="q4" value="c"> Totodile</label>
+                <label><input type="radio" name="q4" value="d"> Gyarados</label>
+            </div>
+        </div>
+
+        <div class="quiz-question">
+            <div class="q-num">Question 5 of 5</div>
+            <p>Which generation introduced Piplup as a starter?</p>
+            <div class="quiz-options">
+                <label><input type="radio" name="q5" value="a"> Generation I</label>
+                <label><input type="radio" name="q5" value="b"> Generation II</label>
+                <label><input type="radio" name="q5" value="c"> Generation III</label>
+                <label><input type="radio" name="q5" value="d"> Generation IV</label>
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="submitQuiz()">Submit Answers 🎯</button>
+
+        <div id="quiz-result">
+            <div id="score-text"></div>
+            <div class="score-bar-bg">
+                <div class="score-bar" id="score-bar"></div>
+            </div>
+            <ul id="feedback-list"></ul>
+            <div class="quiz-buttons">
+                <button class="btn btn-outline" onclick="resetQuiz()">Try Again</button>
+                <a class="btn btn-yellow" href="pokemon.html">See Pokémon 🔍</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var answers = { q1: 'c', q2: 'b', q3: 'c', q4: 'a', q5: 'd' };
+    var explanations = {
+        q1: 'Piplup is a Water-type Pokémon from Generation IV.',
+        q2: 'Charmander evolves into Charmeleon, then Charizard.',
+        q3: 'Pikachu evolves into Raichu (Pichu evolves into Pikachu).',
+        q4: 'Squirtle evolves into Wartortle, then Blastoise.',
+        q5: 'Piplup was introduced in Generation IV (Diamond/Pearl).'
+    };
+
+    function submitQuiz() {
+        var score = 0;
+        var feedback = [];
+        var keys = ['q1', 'q2', 'q3', 'q4', 'q5'];
+
+        for (var i = 0; i < keys.length; i++) {
+            var q = keys[i];
+            var selected = document.querySelector('input[name="' + q + '"]:checked');
+            if (!selected) {
+                alert('Please answer all 5 questions before submitting!');
+                return;
+            }
+            if (selected.value === answers[q]) {
+                score++;
+                feedback.push({ ok: true, text: 'Q' + (i + 1) + ': Correct! ✅ ' + explanations[q] });
+            } else {
+                feedback.push({ ok: false, text: 'Q' + (i + 1) + ': Incorrect ❌ ' + explanations[q] });
+            }
+        }
+
+        var pct = (score / 5) * 100;
+        var resultDiv = document.getElementById('quiz-result');
+        document.getElementById('score-text').textContent = 'You scored ' + score + ' out of 5 (' + pct + '%)';
+        resultDiv.style.display = 'block';
+
+        if (pct >= 80) {
+            resultDiv.className = 'result-good';
+        } else if (pct >= 60) {
+            resultDiv.className = 'result-ok';
+        } else {
+            resultDiv.className = 'result-low';
+        }
+
+        document.getElementById('score-bar').style.width = pct + '%';
+
+        var list = document.getElementById('feedback-list');
+        list.innerHTML = '';
+        for (var j = 0; j < feedback.length; j++) {
+            var li = document.createElement('li');
+            li.className = feedback[j].ok ? 'correct-fb' : 'wrong-fb';
+            li.textContent = feedback[j].text;
+            list.appendChild(li);
+        }
+    }
+
+    function resetQuiz() {
+        var radios = document.querySelectorAll('input[type="radio"]');
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].checked = false;
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+        document.getElementById('score-bar').style.width = '0%';
+    }
+</script>
+</body>
+</html>
